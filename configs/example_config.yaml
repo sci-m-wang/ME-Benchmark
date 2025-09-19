@@ -1,0 +1,44 @@
+# Example configuration for ME-Benchmark
+
+# Model configuration
+model:
+  type: huggingface
+  path: meta-llama/Llama-2-7b-hf
+  model_kwargs:
+    device_map: auto
+    torch_dtype: float16
+
+# Editing method configuration
+editing:
+  method: rome
+  hparams_path: hparams/ROME/llama-2-7b.yaml
+
+# Evaluation configuration
+evaluation:
+  datasets:
+    - name: zsre
+      split: validation
+      metrics: [accuracy, fluency, consistency]
+    - name: counterfact
+      split: validation
+      metrics: [accuracy, locality, portability]
+  
+  # General language understanding benchmarks
+  general_benchmarks:
+    - name: mmlu
+      subset: stem
+      metrics: [accuracy]
+    - name: hellaswag
+      metrics: [accuracy]
+
+# Runner configuration
+runner:
+  type: local
+  max_workers: 4
+  debug: false
+
+# Output configuration
+output:
+  results_dir: results/
+  save_individual_results: true
+  save_summary: true

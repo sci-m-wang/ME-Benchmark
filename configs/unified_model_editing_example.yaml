@@ -1,0 +1,60 @@
+# Example configuration for unified model loading and editing
+
+# Model configuration
+model:
+  type: "huggingface_enhanced"  # or "transformers", "vllm" (if available)
+  path: "gpt2"  # model path or identifier
+  model_kwargs:
+    torch_dtype: "float16"
+    device_map: "auto"
+  tokenizer_kwargs:
+    padding_side: "left"
+  additional_kwargs:
+    backend: "transformers"  # or "vllm"
+
+# Editor configuration
+editor:
+  type: "easyedit"  # or "rome", "rome_easyedit", "ft_easyedit", "ike_easyedit"
+  edit_method: "ROME"  # specific EasyEdit method
+  hparams:
+    layers: [5]
+    mom2_adjustment: true
+    mom2_update_weight: 1000
+    rewrite_module_tmp: "transformer.h.{}.mlp.c_proj"
+    model_name: "gpt2"
+    device: 0
+
+# Example edit data
+edit_data:
+  - prompt: "The capital of France is"
+    subject: "France"
+    target_new: "London"
+  - prompt: "Steve Jobs was the founder of"
+    subject: "Steve Jobs"
+    target_new: "Microsoft"
+
+# Alternative editor configurations
+editors:
+  rome:
+    type: "rome_easyedit"
+    hparams_path: "hparams/ROME/gpt2.yaml"
+  
+  ft:
+    type: "ft_easyedit"
+    hparams:
+      layers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+      num_steps: 20
+      lr: 1e-4
+      weight_decay: 0
+      model_name: "gpt2"
+      device: 0
+
+  ike:
+    type: "ike_easyedit"
+    hparams:
+      k: 32
+      model_name: "gpt2"
+      device: 0
+      sentence_model_name: "all-MiniLM-L6-v2"
+      results_dir: "./results"
+      alg_name: "IKE"
